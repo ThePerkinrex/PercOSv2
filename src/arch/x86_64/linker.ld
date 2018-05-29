@@ -1,15 +1,16 @@
 ENTRY(start)
 
 SECTIONS {
-  /* sets load address to MiB (convention) */
-  . = 1M;
+    . = 1M;
 
-  .boot : {
-    /* put the header at the beginning */
-    KEEP(*(.multiboot_header))
-  }
+    .boot :
+    {
+        /* ensure that the multiboot header is at the beginning */
+        *(.multiboot_header)
+    }
 
-  .text : {
-    *(.text)
-  }
+    .text :
+    {
+        *(.text)
+    }
 }
