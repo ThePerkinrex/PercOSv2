@@ -1,10 +1,10 @@
 [package]
-name = "my_os"
+name = "DiX"
 version = "1.0.0"
-authors = ["ag_dubs"]
+authors = ["ThePerkinrex"]
 
 [lib]
 crate-type = ["staticlib"]
 
-[dependencies]
-rlibc = "0.1.4"
+# [dependencies]
+# rlibc = "0.1.4"
