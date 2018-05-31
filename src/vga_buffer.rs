@@ -119,16 +119,32 @@ impl fmt::Write for Writer {
     }
 }
 
+use spin::Mutex;
 
-pub fn print_something() {
+pub static WRITER: Mutex<Writer> = Mutex::new(Writer {
+    column_position: 0,
+    color_code: ColorCode::new(Color::LightGreen, Color::Black),
+    buffer: unsafe { Unique::new_unchecked(0xb8000 as *mut _) },
+});
+
+macro_rules! println {
+    ($fmt:expr) => (print!(concat!($fmt, "\n")));
+    ($fmt:expr, $($arg:tt)*) => (print!(concat!($fmt, "\n"), $($arg)*));
+}
+
+macro_rules! print {
+    ($($arg:tt)*) => ({
+        $crate::vga_buffer::print(format_args!($($arg)*));
+    });
+}
+
+pub fn print(args: fmt::Arguments) {
     use core::fmt::Write;
-    let mut writer = Writer {
-        column_position: 0,
-        color_code: ColorCode::new(Color::LightGreen, Color::Black),
-        buffer: unsafe { Unique::new_unchecked(0xb8000 as *mut _) },
-    };
+    WRITER.lock().write_fmt(args).unwrap();
+}
 
-    writer.write_byte(b'P');
-    writer.write_str("ercot");
-    write!(writer, "The numbers are {} and {}", 42, 1.0/3.0);
+pub fn clear_screen() {
+    for _ in 0..BUFFER_HEIGHT {
+        println!("");
+    }
 }
