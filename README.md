@@ -1,3 +1,7 @@
-# DiX
+# PercOS v2
 
-DiX is a barebones x86-64 bit kernel prepared to be written in rust
+PercOS v2 is a the successor to [PercOS](https://github.com/theperkinrex/percos), a python3 virtual machine that just simulated a UNIX-like OS.
+
+PercOS v2 is barebones x86-64 bit kernel prepared to be written in rust.
+
+For now it just writes to the VGA Buffer using some wrappers
