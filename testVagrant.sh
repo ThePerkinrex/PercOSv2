@@ -1,4 +1,5 @@
-RUST_TARGET_PATH=$(pwd) xargo build --target=x86_64-DiX_os
+rustup component add --toolchain nightly rust-src
+RUST_TARGET_PATH=$(pwd) xargo build --target=x86_64-PercOS
 echo "Compiling done"
 vagrant reload
 echo "Reloading done"

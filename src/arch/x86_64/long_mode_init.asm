@@ -16,7 +16,7 @@ long_mode_start:
     call rust_main
 
     ; print `OKAY` to screen
-    mov rax, 0x2f432f522f452f50
+    mov rax, 0x2f592f412f4b2f4f
     ; 0x2f592f412f4b2f4f -> OKAY
     ; 0x2f432f522f452f50 -> PERC
     mov qword [0xb8000], rax

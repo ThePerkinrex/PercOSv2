@@ -1,8 +1,8 @@
 arch ?= x86_64
 kernel := build/kernel-$(arch).bin
 iso := build/os-$(arch).iso
-target ?= $(arch)-DiX_os
-rust_os := target/$(target)/debug/libdix.a
+target ?= $(arch)-PercOS
+rust_os := target/$(target)/debug/libpercos.a
 
 linker_script := src/arch/$(arch)/linker.ld
 grub_cfg := src/arch/$(arch)/grub.cfg
@@ -10,7 +10,7 @@ assembly_source_files := $(wildcard src/arch/$(arch)/*.asm)
 assembly_object_files := $(patsubst src/arch/$(arch)/%.asm, \
     build/arch/$(arch)/%.o, $(assembly_source_files))
 
-.PHONY: all clean run iso kernel
+.PHONY: all clean run iso xargo
 
 all: $(kernel)
 
@@ -18,7 +18,7 @@ clean:
 	@rm -r build
 
 run: $(iso)
-	@qemu-system-x86_64 -cdrom $(iso)
+	@qemu-system-x86_64 -k es -cdrom $(iso)
 
 iso: $(iso)
 
@@ -33,8 +33,8 @@ $(kernel): xargo $(rust_os) $(assembly_object_files) $(linker_script)
 	@ld -n --gc-sections -T $(linker_script) -o $(kernel) \
 	    $(assembly_object_files) $(rust_os)
 
-kernel:
-    @RUST_TARGET_PATH=$(shell pwd) xargo build --target $(target)
+xargo:
+  @RUST_TARGET_PATH=$(shell pwd) xargo build --target=$(target)
 
 # compile assembly files
 build/arch/$(arch)/%.o: src/arch/$(arch)/%.asm
