@@ -1,9 +1,12 @@
 #![feature(lang_items)]
 #![no_std]
 
+extern crate rlibc;
+
 #[no_mangle]
 pub extern fn rust_main() {
-
+    let x = ["Hello", "World", "!"];
+    let y = x;
 }
 
 #[lang = "eh_personality"] #[no_mangle] pub extern fn eh_personality() {
