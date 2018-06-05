@@ -1,4 +1,6 @@
 #![feature(lang_items)]
+#![feature(core_intrinsics)]
+#![feature(panic_implementation)]
 #![feature(const_fn)]
 #![feature(ptr_internals)]
 #![feature(unique)]
@@ -15,11 +17,15 @@ mod vga_buffer;
 pub extern fn rust_main() {
 
     vga_buffer::clear_screen();
-    println!("Hello Percot!");
-    println!("Hello Perc{}","!");
-    println!("{}", { println!("inner"); "outer" });
+    println!("PercOS v2");
+    println!("Hola Luis");
+    println!("Este es mi sistema operativo");
+    //println!("{}", { println!("inner"); "outer" });
     loop{} // so that the assembly doesn't get to printing okay in the screen
 }
 
+//use core::intrinsics;
+use core::panic::PanicInfo;
+
 #[lang = "eh_personality"] #[no_mangle] pub extern fn eh_personality() {}
-#[lang = "panic_fmt"] #[no_mangle] pub extern fn panic_fmt() -> ! {loop{}}
+#[panic_implementation] #[no_mangle] pub extern fn panic_fmt(_info: &PanicInfo) -> ! {loop{}}

@@ -70,10 +70,15 @@ Vagrant.configure(2) do |config|
       sudo apt-get install xorriso -y
       sudo apt-get install git -y
       sudo apt-get install vim -y
-      sudo apt-get install -y qemu
-      curl -sf https://raw.githubusercontent.com/brson/multirust/master/blastoff.sh | sh -s -- --yes
-      multirust default nightly-2015-11-19 
+      sudo apt-get install qemu -y
+      sudo apt-get install binutils -y
+      sudo apt-get install make -y
+      sudo apt-get install curl
+      echo "If it gives an error try executing the commands from the Vagrantfile manually"
+      curl https://sh.rustup.rs -sSf | sh -s -- --yes
+      rustup default nightly
   SHELL
 
   config.ssh.forward_x11 = true
+  config.vm.synced_folder ".", "/vagrant", type: "smb"
 end

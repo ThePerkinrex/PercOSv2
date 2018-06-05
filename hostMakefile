@@ -1,0 +1,22 @@
+arch ?= x86_64
+target ?= $(arch)-PercOS
+pwd := /Users/juan/Desktop/Rust\ Projects/PercOSv2
+
+.PHONY: build
+
+run: build
+	@vagrant ssh -- -Y 'cd /vagrant;ls;make run'
+	@echo Run done
+
+build:
+	@rustup component add rust-src
+	@RUST_TARGET_PATH=$(pwd) xargo build --target=$(target)
+	@echo Rust compile done
+	@vagrant reload
+	@vagrant ssh -- -Y 'cd /vagrant;ls;make iso'
+	@echo Build done
+
+clean:
+	@xargo clean
+	@vagrant ssh -- -Y 'cd /vagrant;ls;make clean'
+	@echo Clean done
