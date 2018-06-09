@@ -80,5 +80,5 @@ Vagrant.configure(2) do |config|
   SHELL
 
   config.ssh.forward_x11 = true
-  config.vm.synced_folder ".", "/vagrant", type: "smb"
+  config.vm.synced_folder ".", "/vagrant", type: "smb", smb_username: "juan", smb_password: "1357911246810"
 end

@@ -1,8 +1,8 @@
+Vagrantfile
+.vagrant
 multiboot_header
 boot
 *.o
 *.bin
 *.iso
-.vagrant
-Vagrantfile
 target
