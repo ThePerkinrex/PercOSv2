@@ -143,6 +143,19 @@ pub fn print(args: fmt::Arguments) {
     WRITER.lock().write_fmt(args).unwrap();
 }
 
+macro_rules! panic_print {
+    ($($arg:tt)*) => ({
+        $crate::vga_buffer::panic_print(format_args!($($arg)*));
+    });
+}
+
+pub fn panic_print(args: fmt::Arguments) {
+    use core::fmt::Write;
+    WRITER.lock().color_code = ColorCode::new(Color::LightRed, Color::Black);
+    WRITER.lock().write_fmt(args).unwrap();
+    WRITER.lock().color_code = ColorCode::new(Color::LightGreen, Color::Black);
+}
+
 pub fn clear_screen() {
     for _ in 0..BUFFER_HEIGHT {
         println!("");
