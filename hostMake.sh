@@ -6,5 +6,5 @@
 #vagrant ssh -- -Y 'cd /vagrant;make run'
 #echo "SSH done"
 echo "Starting make"
-make -f hostMakefile $@
+make -f host.makefile $@
 echo "Done"

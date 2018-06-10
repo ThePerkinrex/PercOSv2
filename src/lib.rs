@@ -11,13 +11,16 @@ extern crate rlibc;
 extern crate volatile;
 extern crate spin;
 extern crate multiboot2;
+extern crate cpuio;
 
 #[macro_use]
 mod vga_buffer;
 mod memory;
+mod keyboard;
 
 use memory::FrameAllocator;
 use core::panic::PanicInfo;
+use cpuio::Port;
 
 #[no_mangle]
 pub extern fn rust_main(multiboot_information_address: usize) {
@@ -64,6 +67,31 @@ pub extern fn rust_main(multiboot_information_address: usize) {
             break;
         }
     }
+
+    // Create a port pointing at 0x60, the address of the PS/2 keyboard
+    // port on x86 hardware.  This is an unsafe operation because many
+    // ports can be used to reconfigure your underlying hardware, and
+    // it's the responsiblity of the port creator to make sure it's
+    // used safely.
+    let mut keyboard_port: Port<u8> = unsafe { Port::new(0x60) };
+
+    let mut last_code: u8 = 0;
+    loop {
+
+        let read = keyboard_port.read();
+        println!("scancode: 0x{:x?}, {:?}", read, read);
+        let released: bool = keyboard::check_release(last_code, read);
+        println!("releasecode: {:x?} == {:x?}",(8 << 4) | last_code, read);
+        println!("isRelease: {:?}", released);
+        if released {
+            break;
+        }
+        last_code = read;
+        for n in 0..100 {}
+    }
+
+    //warnln!("Test warning: panicking");
+    //panic!("last wanrning");
 
     loop{} // so that the assembly doesn't get to printing okay in the screen
 }
