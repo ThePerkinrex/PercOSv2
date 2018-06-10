@@ -5,30 +5,32 @@ pwd := /Users/juan/Desktop/Rust\ Projects/PercOSv2
 .PHONY: build
 
 setup:
-	Setting up vagrant
+	@echo Setting up vagrant
 	@vagrant up
-	Vagrant setup
+	@echo Vagrant setup
 
-run: build
-	Starting run
-	@vagrant ssh -- -Y 'cd /vagrant;ls;make run'
-	Run done
+run: build solorun
+
+solorun:
+	@echo Starting run
+	@vagrant ssh -- -Y 'cd /vagrant;ls &> /dev/null;make run'
+	@echo Run done
 
 build:
 	@rustup component add rust-src
 	@RUST_TARGET_PATH=$(pwd) xargo build --target=$(target)
-	Rust compile done
-	Starting asm build and iso build
-	@vagrant ssh -- -Y 'cd /vagrant;ls;make iso'
+	@echo Rust compile done
+	@echo Starting asm build and iso build
+	@vagrant ssh -- -Y 'cd /vagrant;ls &> /dev/null;make iso'
 	@echo Build done
 
 clean:
-	Starting clean
+	@echo Starting clean
 	@xargo clean
-	@vagrant ssh -- -Y 'cd /vagrant;ls;make clean'
-	Clean done
+	@vagrant ssh -- -Y 'cd /vagrant;ls &> /dev/null;make clean'
+	@echo Clean done
 
 halt:
-	Halting
+	@echo Halting
 	@vagrant halt
-	Halted
+	@echo Halted

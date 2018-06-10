@@ -81,13 +81,11 @@ pub extern fn rust_main(multiboot_information_address: usize) {
         let read = keyboard_port.read();
         println!("scancode: 0x{:x?}, {:?}", read, read);
         let released: bool = keyboard::check_release(last_code, read);
-        println!("releasecode: {:x?} == {:x?}",(8 << 4) | last_code, read);
-        println!("isRelease: {:?}", released);
+        println!("releasecode: 0x{:x?}, {:?}", read, read);
         if released {
             break;
         }
         last_code = read;
-        for n in 0..100 {}
     }
 
     //warnln!("Test warning: panicking");
