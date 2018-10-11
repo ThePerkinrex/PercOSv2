@@ -174,6 +174,12 @@ pub fn warn(args: fmt::Arguments) {
     WRITER.lock().color_code = ColorCode::new(Color::LightGreen, Color::Black);
 }
 
+macro_rules! clear {
+    () => ({
+        $crate::vga_buffer::clear_screen();
+    });
+}
+
 pub fn clear_screen() {
     for _ in 0..BUFFER_HEIGHT {
         println!("");

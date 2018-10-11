@@ -21,7 +21,6 @@ mod keyboard;
 
 use memory::FrameAllocator;
 use core::panic::PanicInfo;
-use cpuio::Port;
 
 #[no_mangle]
 pub extern fn rust_main(multiboot_information_address: usize) {
