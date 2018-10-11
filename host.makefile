@@ -16,13 +16,17 @@ solorun:
 	@vagrant ssh -- -Y 'cd /vagrant;ls &> /dev/null;make run'
 	@echo Run done
 
-build:
+build: rustbuild asmbuild
+
+rustbuild:
 	@rustup component add rust-src
 	@RUST_TARGET_PATH=$(pwd) xargo build --target=$(target)
 	@echo Rust compile done
-	@echo Starting asm build and iso build
+
+asmbuild:
+	@echo Starting ASM build and ISO build
 	@vagrant ssh -- -Y 'cd /vagrant;ls &> /dev/null;make iso'
-	@echo Build done
+	@echo ASM and ISO build done
 
 clean:
 	@echo Starting clean

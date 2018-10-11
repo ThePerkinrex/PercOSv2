@@ -1,6 +1,6 @@
 arch ?= x86_64
 kernel := build/kernel-$(arch).bin
-iso := build/os-$(arch).iso
+iso := build/percos-$(arch).iso
 target ?= $(arch)-PercOS
 rust_os := target/$(target)/debug/libpercos.a
 

@@ -3,8 +3,9 @@
 #![feature(panic_implementation)]
 #![feature(const_fn)]
 #![feature(ptr_internals)]
-#![feature(unique)]
-#![feature(const_unique_new)]
+//#![feature(unique)]
+//#![feature(const_unique_new)]
+#![allow(dead_code)]
 #![no_std]
 
 extern crate rlibc;
@@ -73,29 +74,19 @@ pub extern fn rust_main(multiboot_information_address: usize) {
     // ports can be used to reconfigure your underlying hardware, and
     // it's the responsiblity of the port creator to make sure it's
     // used safely.
-    let mut keyboard_port: Port<u8> = unsafe { Port::new(0x60) };
-
-    let mut last_code: u8 = 0;
+    let mut key_handler = keyboard::KeyHandler::new();
     loop {
-
-        let read = keyboard_port.read();
-        println!("scancode: 0x{:x?}, {:?}", read, read);
-        let released: bool = keyboard::check_release(last_code, read);
-        println!("releasecode: 0x{:x?}, {:?}", read, read);
-        if released {
-            break;
-        }
-        last_code = read;
+        key_handler.update();
     }
 
     //warnln!("Test warning: panicking");
     //panic!("last wanrning");
 
-    loop{} // so that the assembly doesn't get to printing okay in the screen
+    //loop{} // so that the assembly doesn't get to printing okay in the screen
 }
 
 #[lang = "eh_personality"] #[no_mangle] pub extern fn eh_personality() {}
-#[panic_implementation]
+#[panic_handler]
 #[no_mangle]
 pub extern fn panic_fmt(pi: &PanicInfo) -> !
 {
