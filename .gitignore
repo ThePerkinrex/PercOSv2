@@ -2,6 +2,7 @@ Vagrantfile
 .vagrant
 multiboot_header
 boot
+build
 *.o
 *.bin
 *.iso
