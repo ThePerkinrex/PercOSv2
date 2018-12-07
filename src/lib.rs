@@ -6,6 +6,7 @@
 //#![feature(unique)]
 //#![feature(const_unique_new)]
 #![allow(dead_code)]
+#![feature(unsize)]
 #![no_std]
 
 extern crate rlibc;
@@ -13,6 +14,8 @@ extern crate volatile;
 extern crate spin;
 extern crate multiboot2;
 extern crate cpuio;
+#[macro_use]
+extern crate bitflags;
 
 #[macro_use]
 mod vga_buffer;
@@ -20,6 +23,7 @@ mod memory;
 mod keyboard;
 
 use memory::FrameAllocator;
+use memory::Frame;
 use core::panic::PanicInfo;
 
 #[no_mangle]
@@ -27,11 +31,11 @@ pub extern fn rust_main(multiboot_information_address: usize) {
 
     vga_buffer::clear_screen();
     println!("PercOS v2");
-    //println!("Hola Luis");
-    //println!("Este es mi sistema operativo");
     let boot_info = unsafe{ multiboot2::load(multiboot_information_address) };
     let memory_map_tag = boot_info.memory_map_tag()
         .expect("Memory map tag required");
+    
+    
 
     println!("memory areas:");
     for area in memory_map_tag.memory_areas() {
@@ -41,11 +45,11 @@ pub extern fn rust_main(multiboot_information_address: usize) {
 
     let elf_sections_tag = boot_info.elf_sections_tag()
         .expect("Elf-sections tag required");
-
+    
     println!("kernel sections:");
     for section in elf_sections_tag.sections() {
-        println!("    addr: 0x{:x}, size: 0x{:x}, flags: 0x{:x}",
-            section.addr, section.size, section.flags);
+        println!("    addr: 0x{:x}, size: 0x{:x}, flags: 0x{:x}, allocated: {}",
+            section.addr, section.size, section.flags, section.is_allocated());
     }
 
     let kernel_start = elf_sections_tag.sections().map(|s| s.addr)
@@ -60,10 +64,10 @@ pub extern fn rust_main(multiboot_information_address: usize) {
     println!("multiboot start: {}, multiboot end: {}", multiboot_start, multiboot_end);
 
     let mut frame_allocator = memory::AreaFrameAllocator::new(kernel_start as usize, kernel_end as usize, multiboot_start, multiboot_end, memory_map_tag.memory_areas());
-
     for i in 0.. {
-        if let None = frame_allocator.allocate_frame() {
+        if None == frame_allocator.allocate_frame() {
             println!("allocated {} frames", i);
+            println!("Next free frame:  number: {}, address: {}, lenght: {} ", frame_allocator.next_free_frame.number, frame_allocator.next_free_frame.address, frame_allocator.next_free_frame.length);
             break;
         }
     }
@@ -74,8 +78,12 @@ pub extern fn rust_main(multiboot_information_address: usize) {
     // it's the responsiblity of the port creator to make sure it's
     // used safely.
     let mut key_handler = keyboard::KeyHandler::new();
+    
     loop {
-        key_handler.update();
+        let stdin = key_handler.update();
+        if stdin.is_some() {
+            print!("{}", stdin.unwrap());
+        }
     }
 
     //warnln!("Test warning: panicking");
