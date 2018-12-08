@@ -1,4 +1,5 @@
-use memory::Frame; // needed later
+#[allow(unused_imports)]
+use memory::Frame; // for later
 
 bitflags! {
     pub struct EntryFlags: u64 {
@@ -45,5 +46,5 @@ impl Entry {
         self.0 = (frame.start_address() as u64) | flags.bits();
     }
 
-    
+
 }

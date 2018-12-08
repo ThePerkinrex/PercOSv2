@@ -9,6 +9,11 @@ setup:
 	@vagrant up
 	@echo Vagrant setup
 
+ssh:
+	@echo Connecting through SSH
+	@vagrant ssh -- -Y
+	@echo SSH connection done
+
 run: build solorun
 
 solorun:

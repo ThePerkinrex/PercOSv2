@@ -3,6 +3,7 @@
 #![feature(panic_implementation)]
 #![feature(const_fn)]
 #![feature(ptr_internals)]
+#![feature(panic_info_message)]
 //#![feature(unique)]
 //#![feature(const_unique_new)]
 #![allow(dead_code)]
@@ -21,6 +22,7 @@ extern crate bitflags;
 mod vga_buffer;
 mod memory;
 mod keyboard;
+use keyboard::*;
 
 use memory::FrameAllocator;
 use memory::Frame;
@@ -80,9 +82,13 @@ pub extern fn rust_main(multiboot_information_address: usize) {
     let mut key_handler = keyboard::KeyHandler::new();
     
     loop {
-        let stdin = key_handler.update();
-        if stdin.is_some() {
-            print!("{}", stdin.unwrap());
+        let key_handle = key_handler.update();
+        if key_handle.is_some() {
+            let key_out = key_handle.unwrap();
+            print!("{}", key_out.clone().get_stdin());
+            if key_out.get_flag(KEY_ESC) {
+                clear!();
+            }
         }
     }
 
@@ -92,11 +98,20 @@ pub extern fn rust_main(multiboot_information_address: usize) {
     //loop{} // so that the assembly doesn't get to printing okay in the screen
 }
 
-#[lang = "eh_personality"] #[no_mangle] pub extern fn eh_personality() {}
+#[lang = "eh_personality"]
+#[no_mangle]
+pub extern fn eh_personality() {}
 #[panic_handler]
 #[no_mangle]
-pub extern fn panic_fmt(pi: &PanicInfo) -> !
-{
-    panic_print!("\n\nPercOS {}", pi); // prints: "PercOS panicked at 'reason', src/'file':'location'"
+pub extern fn panic_fmt(pi: &PanicInfo) -> !{
+    if pi.message().is_some() && pi.location().is_some(){
+        panic_print!("A PercOS error occured because: {}\nat {}", pi.message().unwrap(), pi.location().unwrap());
+    }else if pi.message().is_some() {
+        panic_print!("A PercOS error occured because: {}", pi.message().unwrap());
+    }else if pi.location().is_some() {
+        panic_print!("A PercOS error occured at {}", pi.location().unwrap());
+    }else{
+        panic_print!("A PercOS error occured");
+    }
     loop{}
 }

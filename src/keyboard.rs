@@ -6,7 +6,7 @@ const CONFIGURED_KEYS: usize = 58;
 // <ES-ES Apple Keyboard>
 const KEYS: [char; CONFIGURED_KEYS] = [
     '\0'/*ESC*/, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '\'', '¡', '\0'/*BACKSPACE*/,
-    '\t', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '`', '+', '\n',
+    '\0'/*TAB*/, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '`', '+', '\0'/*ENTER*/,
     '\0'/*CTRL*/, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ñ', '´', 'º', '\0'/*LSHIFT*/, 'ç',
     'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '-', '\0'/*RSHIFT*/,
     '\0'/* LCMD? */,'\0'/* ALT */,' ', '\0' /* RCMD? */
@@ -14,7 +14,7 @@ const KEYS: [char; CONFIGURED_KEYS] = [
 
 const SHIFTKEYS: [char; CONFIGURED_KEYS] = [
     '\0'/*ESC*/, '!', '"', '·', '$', '%', '&', '/', '(', ')', '=', '?', '¿', '\0'/*BACKSPACE*/,
-    '\t', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '^', '*', '\n',
+    '\0'/*TAB*/, 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '^', '*', '\0'/*ENTER*/,
     '\0'/*CTRL*/, 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ñ', '¨', 'ª', '\0'/*LSHIFT*/, 'Ç',
     'Z', 'X', 'C', 'V', 'B', 'N', 'M', ';', ':', '_', '\0'/*RSHIFT*/,
     '\0'/* LCMD? */,'\0'/* ALT */,' ', '\0' /* RCMD? */
@@ -22,7 +22,7 @@ const SHIFTKEYS: [char; CONFIGURED_KEYS] = [
 
 const ALTKEYS: [char; CONFIGURED_KEYS] = [
     '\0'/*ESC*/, '|', '@', '#', '¢', '∞', '¬', '÷', '“', '”', '≠', '´', '‚', '\0'/*BACKSPACE*/,
-    '\t', 'œ', 'æ', '€', '®', '†', '¥', ' ', ' ', 'ø', 'π', '[', ']', '\n',
+    '\0'/*TAB*/, 'œ', 'æ', '€', '®', '†', '¥', ' ', ' ', 'ø', 'π', '[', ']', '\0'/*ENTER*/,
     '\0'/*CTRL*/, 'å', '∫', '∂', 'ƒ', '', '™', '¶', '§', ' ', '~', '{', '\\', '\0'/*LSHIFT*/, '}',
     ' ', '∑', '©', '√', 'ß', ' ', 'µ', '„', '…', '–', '\0'/*RSHIFT*/,
     '\0'/* LCMD? */,'\0'/* ALT */,' ', '\0' /* RCMD? */
@@ -30,7 +30,7 @@ const ALTKEYS: [char; CONFIGURED_KEYS] = [
 
 const ALTSHIFTKEYS: [char; CONFIGURED_KEYS] = [
     '\0'/*ESC*/, 'ı', '˝', '•', '£', '‰', ' ', '⁄', '‘', '’', '≈', '¸', '˛', '\0'/*BACKSPACE*/,
-    '\t', 'Œ', 'Æ', '€', ' ', '‡', ' ', ' ', ' ', 'Ø', '∏', 'ˆ', '±', '\n',
+    '\0'/*TAB*/, 'Œ', 'Æ', '€', ' ', '‡', ' ', ' ', ' ', 'Ø', '∏', 'ˆ', '±', '\0'/*ENTER*/,
     '\0'/*CTRL*/, 'Å', ' ', '∆', 'ﬁ', 'ﬂ', ' ', '¯', 'ˇ', '˘', '˜', '«', '°', '\0'/*LSHIFT*/, '»',
     '‹', '›', ' ', '◊', ' ', '˙', '˚', ' ', '…', '—', '\0'/*RSHIFT*/,
     '\0'/* LCMD? */,'\0'/* ALT */,' ', '\0' /* RCMD? */
@@ -38,7 +38,7 @@ const ALTSHIFTKEYS: [char; CONFIGURED_KEYS] = [
 
 const CAPSKEYS: [char; CONFIGURED_KEYS] = [
     '\0'/*ESC*/, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '\'', '¡', '\0'/*BACKSPACE*/,
-    '\t', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '`', '+', '\n',
+    '\0'/*TAB*/, 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '`', '+', '\0'/*ENTER*/,
     '\0'/*CTRL*/, 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ñ', '´', 'º', '\0'/*LSHIFT*/, 'Ç',
     'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '-', '\0'/*RSHIFT*/,
     '\0'/* LCMD? */,'\0'/* ALT */,' ', '\0' /* RCMD? */
@@ -49,12 +49,14 @@ const CAPSKEYS: [char; CONFIGURED_KEYS] = [
 #[repr(u8)]
 enum ModifierKey {
     ESC         = 01,
+    BackSpace   = 14,
+    Tab         = 15,
+    Enter       = 28,
+    Ctrl        = 29,
     LShift      = 42,
     RShift      = 54,
-    Ctrl       = 29,
     Alt         = 56,
     CapsLock    = 58,
-    BackSpace   = 14,
 }
 
 
@@ -68,6 +70,49 @@ pub fn check_release(last_code: u8, current_code: u8) -> bool {
 
 pub fn release_press_code(release_code: u8) -> u8 {
     return release_code - 128;
+}
+
+type ModFlagsType = u8;
+
+pub const KEY_ENTER     :ModFlagsType = 1<<0;
+pub const KEY_TAB       :ModFlagsType = 1<<1;
+pub const KEY_BACKSPACE :ModFlagsType = 1<<2;
+pub const KEY_ESC       :ModFlagsType = 1<<3;
+
+#[derive(Debug, Clone)]
+pub struct KeyHandlerOut {
+    stdin: char,
+    mod_flags: ModFlagsType,
+}
+
+impl KeyHandlerOut {
+    pub fn new(stdin: char) -> KeyHandlerOut {
+        KeyHandlerOut {
+            stdin: stdin,
+            mod_flags: 0 as ModFlagsType
+    ,
+        }
+    }
+
+    pub fn get_flag(self, flag: ModFlagsType) -> bool {
+        ((self.mod_flags & flag) != 0)
+    }
+
+    pub fn set_flag(&mut self, flag: ModFlagsType) {
+        self.mod_flags |= flag;
+    }
+
+    pub fn unset_flag(&mut self, flag: ModFlagsType) {
+        self.mod_flags -= flag;
+    }
+
+    pub fn get_stdin(self) -> char {
+        self.stdin
+    }
+
+    pub fn set_stdin(&mut self, new_stdin: char) {
+        self.stdin = new_stdin;
+    }
 }
 
 
@@ -91,11 +136,10 @@ impl KeyHandler {
         }
     }
 
-    pub fn update(&mut self) -> Option<char> {
+    pub fn update(&mut self) -> Option<KeyHandlerOut> {
         let read = self.keyboard_port.read();
-        let mut stdin: Option<char> = None;
+        let mut out: Option<KeyHandlerOut> = None;
         if read != 224 {
-            
             if self.last_keycode != read {
 
                 let released: bool = check_release(self.last_keycode, read);
@@ -117,9 +161,9 @@ impl KeyHandler {
                             key = KEYS[(scancode-1) as usize];
                         }
                         if key == '\0' {
-                            stdin = self.handle_mod_key_release(scancode);
+                            out = self.handle_mod_key_release(scancode);
                         }else{
-                            stdin = Some(key.clone());
+                            out = Some(KeyHandlerOut::new(key.clone()));
                             //print!("{}", key);
                         }
                     }
@@ -149,23 +193,34 @@ impl KeyHandler {
             }
             self.last_keycode = read;
         }
-        return stdin;
+        return out;
     }
 
-    fn handle_mod_key_release(&mut self, mod_key: u8) -> Option<char>{
+    fn handle_mod_key_release(&mut self, mod_key: u8) -> Option<KeyHandlerOut>{
         //println!("Handling mod key release {}", mod_key);
-        let mut stdin:Option<char> = None;
+        let mut out: Option<KeyHandlerOut> = None;
         if mod_key == ModifierKey::ESC as u8 {
-            clear!();
+            let mut key_out = KeyHandlerOut::new('\0');
+            key_out.set_flag(KEY_ESC);
+            out = Some(key_out);
         }else if (mod_key == ModifierKey::RShift as u8) | (mod_key == ModifierKey::LShift as u8) {
             self.shift = false;
         }else if mod_key == ModifierKey::BackSpace as u8 {
-            stdin = Some('\0');
-            //warnln!("No implementation for backspace");
+            let mut key_out = KeyHandlerOut::new('\0');
+            key_out.set_flag(KEY_BACKSPACE);
+            out = Some(key_out);
         }else if mod_key == ModifierKey::Alt as u8 {
             self.alt = false;
+        }else if mod_key == ModifierKey::Enter as u8 {
+            let mut key_out = KeyHandlerOut::new('\n');
+            key_out.set_flag(KEY_ENTER);
+            out = Some(key_out);
+        }else if mod_key == ModifierKey::Tab as u8 {
+            let mut key_out = KeyHandlerOut::new('\t');
+            key_out.set_flag(KEY_TAB);
+            out = Some(key_out);
         }
-        return stdin;
+        return out;
     }
 
     fn handle_mod_key_press(&mut self, mod_key: u8){

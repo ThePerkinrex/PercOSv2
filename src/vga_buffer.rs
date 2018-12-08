@@ -29,6 +29,10 @@ impl ColorCode {
     }
 }
 
+const BASE_COLOR_CODE: ColorCode = ColorCode::new(Color::White, Color::Black);
+const WARN_COLOR_CODE: ColorCode = ColorCode::new(Color::Yellow, Color::Black);
+const PANIC_COLOR_CODE: ColorCode = ColorCode::new(Color::LightRed, Color::Black);
+
 #[derive(Debug, Clone, Copy)]
 #[repr(C)]
 struct ScreenChar {
@@ -123,15 +127,17 @@ use spin::Mutex;
 
 pub static WRITER: Mutex<Writer> = Mutex::new(Writer {
     column_position: 0,
-    color_code: ColorCode::new(Color::White, Color::Black),
+    color_code: BASE_COLOR_CODE,
     buffer: unsafe { Unique::new_unchecked(0xb8000 as *mut _) },
 });
 
+#[allow(unused_macros)]
 macro_rules! println {
     ($fmt:expr) => (print!(concat!($fmt, "\n")));
     ($fmt:expr, $($arg:tt)*) => (print!(concat!($fmt, "\n"), $($arg)*));
 }
 
+#[allow(unused_macros)]
 macro_rules! print {
     ($($arg:tt)*) => ({
         $crate::vga_buffer::print(format_args!($($arg)*));
@@ -143,6 +149,7 @@ pub fn print(args: fmt::Arguments) {
     WRITER.lock().write_fmt(args).unwrap();
 }
 
+#[allow(unused_macros)]
 macro_rules! panic_print {
     ($($arg:tt)*) => ({
         $crate::vga_buffer::panic_print(format_args!($($arg)*));
@@ -151,16 +158,18 @@ macro_rules! panic_print {
 
 pub fn panic_print(args: fmt::Arguments) {
     use core::fmt::Write;
-    WRITER.lock().color_code = ColorCode::new(Color::LightRed, Color::Black);
+    WRITER.lock().color_code = PANIC_COLOR_CODE;
     WRITER.lock().write_fmt(args).unwrap();
-    WRITER.lock().color_code = ColorCode::new(Color::LightGreen, Color::Black);
+    WRITER.lock().color_code = BASE_COLOR_CODE;
 }
 
+#[allow(unused_macros)]
 macro_rules! warnln {
     ($fmt:expr) => (warn!(concat!($fmt, "\n")));
     ($fmt:expr, $($arg:tt)*) => (warn!(concat!($fmt, "\n"), $($arg)*));
 }
 
+#[allow(unused_macros)]
 macro_rules! warn {
     ($($arg:tt)*) => ({
         $crate::vga_buffer::warn(format_args!($($arg)*));
@@ -169,11 +178,12 @@ macro_rules! warn {
 
 pub fn warn(args: fmt::Arguments) {
     use core::fmt::Write;
-    WRITER.lock().color_code = ColorCode::new(Color::Yellow, Color::Black);
+    WRITER.lock().color_code = WARN_COLOR_CODE;
     WRITER.lock().write_fmt(args).unwrap();
-    WRITER.lock().color_code = ColorCode::new(Color::LightGreen, Color::Black);
+    WRITER.lock().color_code = BASE_COLOR_CODE;
 }
 
+#[allow(unused_macros)]
 macro_rules! clear {
     () => ({
         $crate::vga_buffer::clear_screen();
