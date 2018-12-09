@@ -206,7 +206,7 @@ impl KeyHandler {
         }else if (mod_key == ModifierKey::RShift as u8) | (mod_key == ModifierKey::LShift as u8) {
             self.shift = false;
         }else if mod_key == ModifierKey::BackSpace as u8 {
-            let mut key_out = KeyHandlerOut::new('\0');
+            let mut key_out = KeyHandlerOut::new('\x08');
             key_out.set_flag(KEY_BACKSPACE);
             out = Some(key_out);
         }else if mod_key == ModifierKey::Alt as u8 {

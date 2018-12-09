@@ -61,6 +61,7 @@ impl Writer {
     pub fn write_byte(&mut self, byte: u8) {
         match byte {
             b'\n' => self.new_line(),
+            b'\x08' => self.backspace(),
             byte => {
                 if self.column_position >= BUFFER_WIDTH {
                     self.new_line();
@@ -93,6 +94,18 @@ impl Writer {
         }
         self.clear_row(BUFFER_HEIGHT-1);
         self.column_position = 0;
+    }
+
+    fn backspace(&mut self) {
+        let blank = ScreenChar {
+            ascii_character: b' ',
+            color_code: self.color_code,
+        };
+        let col = self.column_position;
+        if col != 0 {
+            self.buffer().chars[BUFFER_HEIGHT-1][col-1].write(blank);
+            self.column_position -= 1;
+        }
     }
 
     fn clear_row(&mut self, row: usize) {

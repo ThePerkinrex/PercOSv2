@@ -21,11 +21,13 @@ extern crate bitflags;
 #[macro_use]
 mod vga_buffer;
 mod memory;
+mod shell;
+use shell::PShell;
 mod keyboard;
 use keyboard::*;
 
+
 use memory::FrameAllocator;
-use memory::Frame;
 use core::panic::PanicInfo;
 
 #[no_mangle]
@@ -33,7 +35,7 @@ pub extern fn rust_main(multiboot_information_address: usize) {
 
     vga_buffer::clear_screen();
     println!("PercOS v2");
-    let boot_info = unsafe{ multiboot2::load(multiboot_information_address) };
+    /*let boot_info = unsafe{ multiboot2::load(multiboot_information_address) };
     let memory_map_tag = boot_info.memory_map_tag()
         .expect("Memory map tag required");
     
@@ -72,22 +74,29 @@ pub extern fn rust_main(multiboot_information_address: usize) {
             println!("Next free frame:  number: {}, address: {}, lenght: {} ", frame_allocator.next_free_frame.number, frame_allocator.next_free_frame.address, frame_allocator.next_free_frame.length);
             break;
         }
-    }
+    }*/
 
     // Create a port pointing at 0x60, the address of the PS/2 keyboard
     // port on x86 hardware.  This is an unsafe operation because many
     // ports can be used to reconfigure your underlying hardware, and
     // it's the responsiblity of the port creator to make sure it's
     // used safely.
+    
+
     let mut key_handler = keyboard::KeyHandler::new();
+    let new_shell = &mut PShell::new(multiboot_information_address);
+    let shell_manager = &mut shell::ShellManager::new(new_shell);
     
     loop {
         let key_handle = key_handler.update();
         if key_handle.is_some() {
             let key_out = key_handle.unwrap();
-            print!("{}", key_out.clone().get_stdin());
-            if key_out.get_flag(KEY_ESC) {
+            if key_out.clone().get_flag(KEY_ESC) {
                 clear!();
+            }
+            let shell_flags = shell_manager.update(key_out);
+            if (shell_flags & shell::EXIT_FLAG) == 1 {
+                break;
             }
         }
     }

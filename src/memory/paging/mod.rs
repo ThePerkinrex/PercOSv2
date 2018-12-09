@@ -8,7 +8,7 @@ mod table;
 mod entry;
 
 use self::entry::*;
-use self::table::{P4, Table, Level4};
+use self::table::{Table, Level4};
 
 
 const ENTRY_COUNT: usize = 512;
