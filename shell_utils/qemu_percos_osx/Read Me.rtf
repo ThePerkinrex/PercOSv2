@@ -1,0 +1,96 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
+\cocoascreenfonts1{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww9000\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\b\fs24 \cf0 QEMU Read Me
+\b0 \
+\
+
+\b Programs:
+\b0 \
+qemu-system-ppc is a PowerPC Macintosh emulator.\
+qemu-system-x86_64 is a 64-bit PC emulator.\
+qemu-system-i386 is a 32-bit PC emulator.\
+qemu-img is an image file creation program.\
+\
+This package comes with the above emulators all at version 2.10.1. It is mainly to be used from the terminal program that comes with Mac OS X. \
+\
+
+\b Command-line:
+\b0 \
+Running the emulator:\
+qemu-system-i386 -m <memory size for emulator> -hda <hard drive image file> -cdrom <cdrom image file> -boot <boot drive> -soundhw <sound card> ...\
+\
+Creating an image file for the emulator's hard drive:\
+qemu-img create -f qcow2 <name>.qcow2 <size in GB>G\
+\
+Examples:\
+./qemu-system-i386 -m 400 -hda ReactOSHD.qcow2 -boot c -soundhw ac97 -net nic,model=ne2k_pci -net user\
+\
+qemu-img create -f qcow2 ReactOSHD.qcow2 1G\
+\
+./qemu-system-ppc -m 256 -M mac99 -hda "Mac OS 9 HD.img\'94 -cdrom doom.iso -boot c \
+\
+
+\b Files:
+\b0 \
+Programs folder - stores all the usable programs\
+pc-bios - bios files for the emulator\
+libs - library files used by the programs\
+\
+This program is made to be portable. All the files need to stay together in order for these programs to work.\
+\
+Please see http://qemu.org for more information.\
+\
+
+\b System Requirements:
+\b0 \
+64-bit x86 processor\
+Mac OS 10.6 or higher\
+\
+
+\b Toubleshooting:
+\b0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \ul \ulc0 You see this error message: qemu: could not load PC BIOS 'bios.bin'\ulnone \
+Try adding the -L option with the path to the pc-bios folder like this: -L <path>/pc-bios\
+\
+\ul HELP! I'm stuck in full screen mode and don't remember how to get out!\ulnone \
+Try to shut down your operating system. That will cause QEMU to quit.\
+\
+\ul This emulator is too slow\ulnone \
+Emulation is an extra layer that has to run on top of the host computer's CPU. The more layers in between your program and your CPU, the slower your program will probably be. Having the latest and greatest in computer technology helps.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\b \cf0 Compatibility
+\b0 :\
+I have been able to run many operating systems with QEMU.\
+Here is what I have ran personally:\
+- FreeDOS\
+- Windows 3.1\
+- Windows 95\
+- Windows 2000\
+- Windows XP\
+- Windows 7\
+- ReactOS 0.4.6\
+- Mac OS 9.0\
+- Mac OS 9.1\
+- Mac OS 9.2\
+- Mac OS 10.2\
+- Mac OS 10.4\
+\
+
+\b Contact
+\b0 :\
+I really hope you enjoy QEMU. I have been a fan of emulation since the 90's. I like reading users' comments and suggestions. If you wish to contact me, my email address is programmingkidx@gmail.com.\
+\
+
+\b Disclaimer:
+\b0 \
+This software has been tested to work, but is far from perfect. It is released under the GPL v2.0 license. The user is responsible for all consequences of this software. \
+\
+October 26, 2017}

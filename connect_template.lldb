@@ -1,0 +1,3 @@
+setting set target.source-map . "$PWD"/src
+target create "build/kernel-x86_64.bin"
+gdb-remote 1234

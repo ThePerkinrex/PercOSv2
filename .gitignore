@@ -1,8 +1,8 @@
-Vagrantfile
 .vagrant
 multiboot_header
 boot
 build
+connect.lldb
 *.o
 *.bin
 *.iso
